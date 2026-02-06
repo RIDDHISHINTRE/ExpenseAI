@@ -8,7 +8,9 @@ import com.expenses_ai.exception.ResourceNotFoundException;
 import com.expenses_ai.exception.BadRequestException;
 import com.expenses_ai.model.Expense;
 import com.expenses_ai.model.Expense.Category;
+import com.expenses_ai.model.MonthlyBudget;
 import com.expenses_ai.repository.ExpenseRepository;
+import com.expenses_ai.repository.MonthlyBudgetRepository;
 import com.expenses_ai.dto.MonthlyReportResponse;
 import com.expenses_ai.dto.CategoryComparisonResponse;
 import com.expenses_ai.dto.ExpensePredictionResponse;
@@ -20,22 +22,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+    private final MonthlyBudgetRepository budgetRepository;
 
-    public ExpenseService(ExpenseRepository expenseRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository ,MonthlyBudgetRepository 
+        budgetRepository
+    ) {
         this.expenseRepository = expenseRepository;
+        this.budgetRepository = budgetRepository;
     }
 
     public Expense addExpense(String userId, ExpenseRequest req) {
@@ -395,4 +397,28 @@ public class ExpenseService {
 
         return response;
     }
+
+    public void checkBudgetBeforeAdding(String userId, Double newExpenseAmount) {
+        LocalDate today = LocalDate.now();
+        int month = today.getMonthValue();
+        int year = today.getYear();
+
+        // 1️⃣ Get monthly budget
+        Optional<MonthlyBudget> budgetOpt = budgetRepository.findByUserIdAndMonthAndYear(userId, month, year);
+
+        if (budgetOpt.isEmpty()) {
+            throw new BadRequestException("Set your monthly budget first");
+        }
+
+        MonthlyBudget budget = budgetOpt.get();
+
+        // 2️⃣ Get total expenses for this month
+        List<Expense> expensesThisMonth = expenseRepository.findExpensesByMonthAndYear(userId, month, year);
+        double totalSoFar = expensesThisMonth.stream().mapToDouble(Expense::getAmount).sum();
+
+        if (totalSoFar + newExpenseAmount > budget.getBudgetAmount()) {
+            throw new BadRequestException("Adding this expense exceeds your monthly budget");
+        }
+    }
+    
 }

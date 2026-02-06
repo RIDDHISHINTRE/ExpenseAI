@@ -1,14 +1,30 @@
-export default function ExpenseSearch({ search, onSearch, onSubmit, onAdd }) {
+export default function ExpenseSearch({
+  search,
+  onSearch,
+  onSubmit,
+  onAdd,
+  onSetBudget,
+}) {
   return (
     <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">All Expenses</h2>
-        <button
-          onClick={onAdd}
-          className="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700"
-        >
-          Add Expense
-        </button>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onSetBudget}
+            className="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700"
+          >
+            Set/Edit Budget
+          </button>
+
+          <button
+            onClick={onAdd}
+            className="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700"
+          >
+            Add Expense
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-4 mb-4">

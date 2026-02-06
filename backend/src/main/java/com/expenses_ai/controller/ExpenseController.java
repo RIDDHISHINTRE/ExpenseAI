@@ -17,11 +17,8 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
-
-
 @RestController
 @RequestMapping("/expenses")
-@CrossOrigin(origins = "*")
 public class ExpenseController {
     
     private final ExpenseService expenseService;
@@ -44,6 +41,9 @@ public class ExpenseController {
     @PostMapping("/add")
     public ResponseEntity<?> addExpense(@Valid @RequestBody ExpenseRequest req){
         String userId = getLoggedInUserId();
+
+        expenseService.checkBudgetBeforeAdding(userId, req.getAmount());
+        
         Expense saved = expenseService.addExpense(userId , req);
         return ResponseEntity.ok(saved);
     }

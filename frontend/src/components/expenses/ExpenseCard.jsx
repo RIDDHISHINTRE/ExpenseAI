@@ -3,6 +3,7 @@ import ExpenseFormModal from "./ExpenseFormModal";
 import ExpenseSearch from "./ExpenseSearch";
 import ExpenseTable from "./ExpenseTable";
 import ExpensePagination from "./ExpensePagination";
+import SetBudgetModal from "./SetBudgetModal";
 import apiFetch from "../../utils/api";
 
 export default function ExpenseCard() {
@@ -12,6 +13,10 @@ export default function ExpenseCard() {
   const [search, setSearch] = useState({ title: "", category: "" });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [budgetMode, setBudgetMode] = useState("SET"); // SET | EDIT
+  const [currentBudget, setCurrentBudget] = useState(null);
+
   const [editingExpense, setEditingExpense] = useState(null);
 
   const loadExpenses = async (pageNumber = 0, filters = search) => {
@@ -26,6 +31,23 @@ export default function ExpenseCard() {
     setTotalPages(data.totalPages || 1);
     setPage(pageNumber);
   };
+
+  const openBudgetModal = async () => {
+    try {
+      const data = await apiFetch(
+        "http://localhost:8080/monthly-budget/current"
+      );
+
+      setBudgetMode("EDIT");
+      setCurrentBudget(data.budgetAmount);
+    } catch (err) {
+      setBudgetMode("SET");
+      setCurrentBudget(null);
+    }
+
+    setIsBudgetModalOpen(true);
+  };
+
 
   useEffect(() => {
     loadExpenses();
@@ -52,14 +74,18 @@ export default function ExpenseCard() {
     const url = editingExpense
       ? `http://localhost:8080/expenses/update/${editingExpense.id}`
       : `http://localhost:8080/expenses/add`;
+    
+    try{
+      await apiFetch(url, {
+        method: editingExpense ? "PUT" : "POST",
+        body: JSON.stringify(data),
+      });
 
-    await apiFetch(url, {
-      method: editingExpense ? "PUT" : "POST",
-      body: JSON.stringify(data),
-    });
-
-    setIsModalOpen(false);
-    loadExpenses(page);
+      setIsModalOpen(false);
+      loadExpenses(page);
+    }catch(err){
+       alert(err.message);
+    }
   };
 
   return (
@@ -72,7 +98,16 @@ export default function ExpenseCard() {
           setEditingExpense(null);
           setIsModalOpen(true);
         }}
-      />nex
+        onSetBudget={openBudgetModal}
+      />
+
+     <SetBudgetModal
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        mode={budgetMode}
+        existingAmount={currentBudget}
+     />
+
 
       <ExpenseTable
         expenses={expenses}
@@ -96,6 +131,9 @@ export default function ExpenseCard() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
       />
+
+      
+
     </div>
   );
 }
