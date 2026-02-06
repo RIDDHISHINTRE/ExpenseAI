@@ -417,7 +417,7 @@ public class ExpenseService {
         double totalSoFar = expensesThisMonth.stream().mapToDouble(Expense::getAmount).sum();
 
         if (totalSoFar + newExpenseAmount > budget.getBudgetAmount()) {
-            throw new BadRequestException("Adding this expense exceeds your monthly budget");
+            throw new BadRequestException("Adding this expense exceeds your monthly budget ,update your budget");
         }
     }
     
