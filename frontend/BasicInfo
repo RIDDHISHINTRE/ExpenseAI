@@ -42,3 +42,20 @@ sudo systemctl restart ssh
 
 mykey.pem permission = chmod 400 mykey.pem
 
+3.deplpoyment blog-management
+
+sudo apt update -y
+sudo apt install git -y4
+sudo apt install nodejs npm -y
+git clone https://github.com/RIDDHISHINTRE/Blog-management.git
+npm install
+nano .env
+PORT=3000
+MONGO_URI=(in blog repo)
+
+node server.js
+in browser
+http://public-ip:3000
+
+
+
