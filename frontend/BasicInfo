@@ -58,4 +58,26 @@ in browser
 http://public-ip:3000
 
 
+4.mern stack e-commerce
+
+ssh -i key.pem ubuntu@EC2_PUBLIC_IP(in your local terminal where you installed key.pem)
+sudo apt update -y
+sudo apt install nodejs npm git -y
+sudo npm install -g pm2 serve
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
+cd backend
+npm install
+nano .env
+MONGO_URI=mongodb+srv://riddhishintre_db_user:Rad1303@cluster0.ptxkk0c.mongodb.net/e-commerce?retryWrites=true&w=majority&appName=Cluster0
+PORT=5000
+pm2 start server.js --name backend
+pm2 save
+cd ../frontend
+npm install
+npm run build
+serve -s dist -l 3000
+http://EC2_PUBLIC_IP
+(add 5000 , 3000 in inbound rules)
+
 
