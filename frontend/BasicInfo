@@ -1,0 +1,20 @@
+1.cloud static website
+
+sudo apt update
+sudo apt install apache2 -y
+sudo systemctl start apache2
+sudo systemctl enable apache2
+sudo apt install git -y
+cd /var/www/html
+sudo rm index.html
+sudo git clone YOUR_GITHUB_LINK
+ex: the project name is cloud-static-website you can change the name according to repo
+sudo git clone https://github.com/USERNAME/cloud-static-website.git
+sudo mv cloud-static-website/* .
+sudo rm -rf cloud-static-website
+sudo chmod -R 755 /var/www/html
+
+
+
+then type in browswer http://public_ip
+exit
