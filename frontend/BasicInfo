@@ -18,3 +18,27 @@ sudo chmod -R 755 /var/www/html
 
 then type in browswer http://public_ip
 exit
+
+2.transfer
+
+cretae vm1 , vm2 and mykey.pem if required 
+
+both vm1 & vm2
+
+sudo apt update
+
+sudo apt install openssh-client -y
+
+in vm1 = 
+
+echo "Hello from VM1" > file.txt
+scp -i mykey.pem file.txt ubuntu@(private ip of Vm2)
+
+in vm2 = 
+
+ls 
+cat file.txt 
+sudo systemctl restart ssh
+
+mykey.pem permission = chmod 400 mykey.pem
+
