@@ -78,6 +78,10 @@ npm install
 npm run build
 serve -s dist -l 3000
 http://EC2_PUBLIC_IP
+
+in codes alsp in frontend the api should be http://public-ip:3000 strictly and in backend you can see in todo mern app.listern should be 
+changed and if backend don't work simply do
+pm kill
 (add 5000 , 3000 in inbound rules)
 
 
