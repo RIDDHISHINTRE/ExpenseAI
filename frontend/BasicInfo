@@ -193,3 +193,39 @@ async function checkPerformance() {
 
 </body>
 </html>
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Expert System Rule Engine
+function evaluateEmployee(data) {
+    let score = 0;
+
+    if (data.attendance >= 90) score += 3;
+    else if (data.attendance >= 75) score += 2;
+    else score += 1;
+
+    if (data.quality === "good") score += 3;
+    else if (data.quality === "average") score += 2;
+    else score += 1;
+
+    if (data.punctuality === "yes") score += 3;
+
+    if (score >= 8) return "Excellent";
+    else if (score >= 5) return "Good";
+    else if (score >= 3) return "Average";
+    else return "Poor";
+}
+
+// API
+app.post("/evaluate", (req, res) => {
+    const result = evaluateEmployee(req.body);
+    res.json({ performance: result });
+});
+
+app.listen(5000, () => {
+    console.log("Server running on port 5000");
+});
