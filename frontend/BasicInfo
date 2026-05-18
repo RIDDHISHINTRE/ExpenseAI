@@ -100,3 +100,96 @@ Messaging.SendEmailResult[] result =
 System.debug('Email send status: ' + result[0].isSuccess());
 System.debug('Errors: ' + result[0].getErrors());
 
+//expert systsem
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Expert System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f2f2f2;
+        }
+
+        input, select {
+            padding: 8px;
+            margin: 10px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkblue;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Employee Performance Evaluation</h2>
+
+<input id="attendance" placeholder="Attendance %" />
+<br>
+
+<select id="quality">
+    <option value="good">Good Quality</option>
+    <option value="average">Average Quality</option>
+    <option value="poor">Poor Quality</option>
+</select>
+
+<br>
+
+<select id="punctuality">
+    <option value="yes">Punctual</option>
+    <option value="no">Not Punctual</option>
+</select>
+
+<br>
+
+<button onclick="checkPerformance()">Evaluate</button>
+
+<h3 id="result"></h3>
+
+<script>
+async function checkPerformance() {
+    const data = {
+        attendance: Number(document.getElementById("attendance").value),
+        quality: document.getElementById("quality").value,
+        punctuality: document.getElementById("punctuality").value
+    };
+
+    const res = await fetch("http://localhost:5000/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    document.getElementById("result").innerText =
+        "Performance: " + result.performance;
+}
+</script>
+
+</body>
+</html>
