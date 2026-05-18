@@ -84,4 +84,19 @@ changed and if backend don't work simply do
 pm2 kill
 (add 5000 , 3000 in inbound rules)
 
+5.apex mail sending through console
+
+// apex email sending through console
+
+Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+
+mail.setToAddresses(new String[] {'pratikshashintre@gmail.com'});
+mail.setSubject('Test Email from Salesforce');
+mail.setPlainTextBody('Hello, this is a test email sent using Apex.');
+
+Messaging.SendEmailResult[] result =
+    Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+
+System.debug('Email send status: ' + result[0].isSuccess());
+System.debug('Errors: ' + result[0].getErrors());
 
